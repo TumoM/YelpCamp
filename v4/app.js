@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 var app = express();
 var mongoose = require("mongoose");
 var Campground = require("./models/campground");
+var Comment = require("./models/comment");
 var seedDB = require("./seeds");
 var path = require('path');
 var options = {'useCreateIndex': true,
@@ -86,7 +87,7 @@ app.get("/campgrounds/:id", function(req, res){
     let id = req.params.id;
     Campground.findById(id).populate("comments").exec(function(err, camp){
         if (!err) {
-            console.log(`CAMP IS: ${camp}`);
+            console.log(`Camp ${camp.name} found`);
             
             res.render("campgrounds/show",{camp});
         } else {
@@ -97,6 +98,7 @@ app.get("/campgrounds/:id", function(req, res){
    
 })
 
+// New Comments
 app.get("/campgrounds/:id/comments/new", function(req, res){
     Campground.findById(req.params.id,function(err, camp){
         if (err) {
@@ -108,6 +110,32 @@ app.get("/campgrounds/:id/comments/new", function(req, res){
         }
     })
 })
+
+// Create Comment
+app.post("/campgrounds/:id/comments", function(req, res){
+    Campground.findById(req.params.id,function(err, camp){
+        if (err) {
+            console.log(err);
+            res.redirect(`/campgrounds`);
+        } else {
+            Comment.create(
+                req.body.comments,function(err, comment){
+                    if (err) {
+                        console.log(err);
+                        
+                    }else{
+                        camp.comments.push(comment);
+                        camp.save();
+                        res.redirect(`/campgrounds/${camp._id}`);
+
+                            
+                        }
+                    });
+                    }
+                }
+            )
+        }
+    );
 
 app.listen(port,function(){
     console.log(`YelpCamp Server running on ${port}`);
