@@ -4,4 +4,9 @@
 <img src="<%=camp.image%>">
 <p><%=camp.description%></p>
 
+<% camp.comments.forEach(function(comment){%>
+    <p>
+       <strong> <%= comment.author%></strong> -  <%= comment.text%>
+    </p>
+    <%}) %>
 <%- include("partials/footer") %>
