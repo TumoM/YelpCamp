@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 var app = express();
 var mongoose = require("mongoose");
+var Campground = require("./models/campgrounds");
 var options = {'useCreateIndex': true,
 'useFindAndModify': false,
 'useNewUrlParser': true,
@@ -9,7 +10,7 @@ var options = {'useCreateIndex': true,
 }
 mongoose.connect("mongodb://localhost:27017/yelp_camp", options);
 
-var port = 3000;
+var port = 3001;
 
 var campgrounds = [
     {name: "Willow Creek", image: "https://pixabay.com/get/57e8d3444855a914f6da8c7dda793f7f1636dfe2564c704c72277adc9744c25e_340.jpg"},
@@ -27,13 +28,7 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static('public'))
 
-var campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-})
 
-var Campground = mongoose.model("Campground", campgroundSchema);
 // Campground.create(campgrounds[1], function(err, campgrounds){
 //     if (!err) {
 //         console.log("Newly created campground");
