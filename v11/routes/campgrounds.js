@@ -54,12 +54,11 @@ router.get("/new",middleware.isLoggedIn, function (req, res) {
 router.get("/:id", function (req, res) {
     let id = req.params.id;
     Campground.findById(id).populate("comments").exec(function (err, camp) {
-        if (!err) {
-            res.render("campgrounds/show", {
-                camp
-            });
+        if (!err && camp) {
+            res.render("campgrounds/show", {camp});
         } else {
-            console.log(err);
+            req.flash("error", "Campground not found!");
+            res.redirect("back");
 
         }
     });
@@ -70,6 +69,7 @@ router.get("/:id", function (req, res) {
 router.get("/:id/edit",middleware.checkCampOwnership, function (req, res) {
             Campground.findById(req.params.id, function (err, camp) {
                 if (err) {
+                    req.flash("error","Campground not found/DB Error");
                     console.log(err);
                 } else {
                     res.render("campgrounds/edit", {camp});
