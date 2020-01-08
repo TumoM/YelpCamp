@@ -14,3 +14,7 @@
 .thumbnail .caption-full{
     padding:0.9rem;
 }
+
+#delete-form{
+    display:inline;
+}

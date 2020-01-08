@@ -2,6 +2,7 @@ var express     = require("express"),
     app         = express(),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose"),
+    methodOverride = require("method-override"),
     passport    = require("passport"),
     localStrategy = require("passport-local"),
     User        = require("./models/user"),
@@ -28,6 +29,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static(path.join(__dirname, '/public')));
 app.set('views', path.join(__dirname, '/views'));
+app.use(methodOverride("_method"));
 // seedDB();
 
 // PASSPORT CONFIG

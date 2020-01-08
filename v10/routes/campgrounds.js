@@ -4,8 +4,6 @@ var Campground  = require("../models/campground"),
 Comment     = require("../models/comment");
 
 
-
-
 // INDEX Campground 
 router.get("/", function (req, res) {
     var user = req.user
@@ -67,7 +65,58 @@ router.get("/:id", function (req, res) {
 
 })
 
+// Edit Campground
+router.get("/:id/edit",checkCampOwnership, function (req, res) {
+            Campground.findById(req.params.id, function (err, camp) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.render("campgrounds/edit", {camp});
+                }
+            });
+        });
+
+// Update Campground
+router.put("/:id",checkCampOwnership,function(req,res){
+    Campground.findByIdAndUpdate(req.params.id,req.body.camp, function(err, camp){
+        if (err) {
+            res.redirect("/campgrounds");
+        } else {
+            res.redirect("/campgrounds/"+req.params.id);
+        }
+    })
+})
+
+// Destroy Campground
+router.delete("/:id",checkCampOwnership,function(req,res){
+    Campground.findByIdAndDelete(req.params.id,function(err, result){
+        if (err) {
+            res.redirect("/campgrounds");
+        } else {
+            res.redirect("/campgrounds");
+        }
+    })
+})
+
 // Middleware
+function checkCampOwnership(req,res,next){
+    if (req.isAuthenticated()) {
+        Campground.findById(req.params.id, function(err,camp){
+            if (err) {
+                res.redirect("back");
+            } else {
+                if (camp.author.id.equals(req.user._id )) {
+                    next();   
+                }else{
+                    res.send("Not authorized to be here")
+                }
+            }
+        })
+    }else{
+        console.log("not logged in");
+        res.redirect("back");
+    }
+}
 function isLoggedIn(req, res, next){
     if (req.isAuthenticated()) {
         return next();
