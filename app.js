@@ -20,8 +20,9 @@ var options = {
     'useNewUrlParser': true,
     'useUnifiedTopology': true
 }
-// mongoose.connect("mongodb://localhost:27017/yelp_camp_v12", options);
-mongoose.connect("mongodb+srv://temp1:pass123@cluster0-ssudz.gcp.mongodb.net/yelp_camp?retryWrites=true&w=majority", options);
+let dbURL = process.env.DATABASEURL || "mongodb://localhost:27017/yelp_camp_v12";
+
+mongoose.connect(dbURL, options);
 var port = process.env.PORT || 3001; 
 
 app.set("view engine", "ejs");
